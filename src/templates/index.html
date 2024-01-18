@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Additional styling for chat messages */
+        .message-container {
+            margin-top: 20px;
+            max-width: 70%;
+        }
+
+        .user-message {
+            background-color: #4CAF50;
+            color: white;
+            text-align: right;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .response-message {
+            background-color: #008CBA;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="message-container" id="messageContainer">
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Type your message..." id="messageInput">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    function sendMessage() {
+        // Get the user's message
+        var userMessage = document.getElementById("messageInput").value;
+
+        // Create a user message element
+        var userMessageElement = document.createElement("div");
+        userMessageElement.className = "user-message";
+        userMessageElement.innerText = userMessage;
+
+        // Append the user message to the message container
+        document.getElementById("messageContainer").appendChild(userMessageElement);
+
+        // Make a POST request to the server
+        fetch('/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Create a response message element
+            var responseMessageElement = document.createElement("div");
+            responseMessageElement.className = "response-message";
+            responseMessageElement.innerText = data.message;
+
+            // Append the response message to the message container
+            document.getElementById("messageContainer").appendChild(responseMessageElement);
+        });
+
+        // Clear the input field after sending the message
+        document.getElementById("messageInput").value = "";
+    }
+</script>
+
+</body>
+</html>
