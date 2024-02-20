@@ -8,7 +8,7 @@ Maybe you can mention me or this repo in the acknowledgements too
 -->
 <div align="center">
 
-  <img src="src/static/image/screen1.png" alt="logo" width="200" height="auto" />
+  <img src="./src/static/image/screen1.png" alt="logo" width="200" height="auto" />
   <h1>Python-Chatbot-OpenAI</h1>
 
   <p>
@@ -62,8 +62,6 @@ Maybe you can mention me or this repo in the acknowledgements too
   - [Environment Variables](#key-environment-variables)
 - [Getting Started](#toolbox-getting-started)
   - [Prerequisites](#bangbang-prerequisites)
-  - [Installation](#gear-installation)
-  - [Running Tests](#test_tube-running-tests)
   - [Run Locally](#running-run-locally)
   - [Deployment](#triangular_flag_on_post-deployment)
 - [Usage](#eyes-usage)
@@ -84,7 +82,7 @@ Maybe you can mention me or this repo in the acknowledgements too
 ### :camera: Screenshots
 
 <div align="center">
-  <img src="src/static/image/screen1.png" alt="screenshot" />
+  <img src="./src/static/image/screen1.png" alt="screenshot" />
 </div>
 
 <!-- TechStack -->
@@ -207,7 +205,7 @@ To deploy this project run
 Use OpenAI API Key to run it locally
 
 <div align="center">
-  <img src="src/static/image/screen3.png" alt="input key" />
+  <img src="./src/static/image/screen3.png" alt="input key" />
 </div>
 
 <!-- Roadmap -->
@@ -216,9 +214,9 @@ Use OpenAI API Key to run it locally
 
 - [x] Input Valid OpenAI API Key to use
 - [x] Chat Completion model only
-- [] Image generator
-- [] Speech to text
-- [] Fine-Tuning
+- [ ] Image generator
+- [ ] Speech to text
+- [ ] Fine-Tuning
 
 <!-- Contributing -->
 
@@ -261,7 +259,7 @@ Distributed under the no License. See LICENSE.txt for more information.
 
 ## :handshake: Contact
 
-Vu Nguyen - [@linkedin_handle](https://www.linkedin.com/in/nguyen-cao-nam-vu/) -
+Vu Nguyen - [@Linkedin](https://www.linkedin.com/in/nguyen-cao-nam-vu/) -
 vunguyennamcao@gmail.com
 
 Project Link:
