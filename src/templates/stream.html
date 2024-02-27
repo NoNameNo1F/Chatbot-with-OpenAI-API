@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Streaming Chat</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/styles.css')}}"
+    />
+  </head>
+  <body>
+    <h1>Streaming Chat</h1>
+    <div class="container-fluid col-md-6">
+      <div class="message-container" id="messageContainer"></div>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Type your message..."
+          id="messageInput"
+        />
+
+        <div class="input-group-append">
+          <button class="btn btn-success" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      //Function to establish server-sent event connection
+      var msg = "";
+      function streamResponse() {
+        source = new EventSource("/stream");
+        console.log("source is listening");
+
+        //source.preventDefault();
+        source.addEventListener("message", function (e) {
+          if (e.data === "finisheddd") {
+            console.log("closing cnt");
+            source.close();
+          } else {
+            msg += e.data;
+            console.log("Received a message: ", msg);
+            var messageContainer = document.getElementById("messageContainer");
+            var responseMessageElement = document.createElement("div");
+
+            responseMessageElement.className = "response-message";
+            var length = messageContainer.children.length;
+            //Check if there are any existing elements
+            if (
+              length > 0 &&
+              messageContainer.children[length - 1].className ===
+                "response-message"
+            ) {
+              // Remove the last element
+              messageContainer.removeChild(messageContainer.lastChild);
+            }
+
+            responseMessageElement.innerText = msg;
+            document
+              .getElementById("messageContainer")
+              .appendChild(responseMessageElement);
+          }
+        });
+        //source.close();
+        console.log("source is closed");
+      }
+      function sendMessage() {
+        var userMessage = document.getElementById("messageInput").value;
+        if (userMessage === "") {
+          return;
+        }
+
+        // Create a user message element
+        var userMessageElement = document.createElement("div");
+        userMessageElement.className = "user-message";
+        userMessageElement.innerText = userMessage;
+
+        // Append the user message to the message container
+        document
+          .getElementById("messageContainer")
+          .appendChild(userMessageElement);
+
+        // Make a POST request to the server
+        fetch("/stream", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: userMessage,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "Ok") {
+              msg = "";
+              streamResponse();
+            } else {
+              //Display Error, but it's will never false :D
+            }
+          });
+
+        document.getElementById("messageInput").value = "";
+      }
+      //   function sendMessage1() {
+      //     var userMessage = document.getElementById("messageInput").value;
+      //     if (userMessage === "") {
+      //       return;
+      //     }
+
+      //     // Create a user message element
+      //     var userMessageElement = document.createElement("div");
+      //     userMessageElement.className = "user-message";
+      //     userMessageElement.innerText = userMessage;
+
+      //     // Append the user message to the message container
+      //     document
+      //       .getElementById("messageContainer")
+      //       .appendChild(userMessageElement);
+
+      //     // Make a GET request to the server
+
+      //     document.getElementById("messageInput").value = "";
+      //   }
+
+      //window.onload = function () {
+      //streamResponse();
+      //};
+    </script>
+  </body>
+</html>

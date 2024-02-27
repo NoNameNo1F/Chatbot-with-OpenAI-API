@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot - Interview Bot</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="icon"
+      href="/static/icon/icons8-chatbot.gif"
+      sizes="32x32"
+      type="image/gif"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/styles.css')}}"
+    />
+  </head>
+  <body>
+    <div class="container-fluid p-0">
+      <header class="header">
+        <nav
+          class="navbar navbar-expand-lg navbar-light navbar-toggleable-smbd-navbar sticky-top border-bottom box-shadow mb-lg-1"
+        >
+          <a
+            href="/"
+            class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none px-5"
+            style="color: #0c001f; font-weight: bold"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-house-door-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"
+              />
+            </svg>
+            Home
+          </a>
+
+          <ul class="nav col-12 my-2 justify-content-center my-md-0">
+            <li class="nav-item">
+              <a
+                href="/chat"
+                class="nav-link text-small"
+                style="color: #0c001f; font-weight: bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chat-left-text"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
+                  />
+                  <path
+                    d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"
+                  />
+                </svg>
+                Chatting
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="/interview-bot"
+                class="nav-link"
+                style="color: #0c001f; font-weight: bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chat-left-text"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
+                  />
+                  <path
+                    d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"
+                  />
+                </svg>
+                Interview Bot
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="/image-generator"
+                class="nav-link"
+                style="color: #0c001f; font-weight: bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-card-image"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                  <path
+                    d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"
+                  />
+                </svg>
+                Create Image
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="/speech"
+                class="nav-link"
+                style="color: #0c001f; font-weight: bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-mic"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"
+                  />
+                  <path
+                    d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3"
+                  />
+                </svg>
+                Text To Speech
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="/audio-to-text"
+                class="nav-link"
+                style="color: #0c001f; font-weight: bold"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-music-note-beamed"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13s1.12-2 2.5-2 2.5.896 2.5 2m9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2"
+                  />
+                  <path fill-rule="evenodd" d="M14 11V2h1v9zM6 3v10H5V3z" />
+                  <path
+                    d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4z"
+                  />
+                </svg>
+                Audio To Text
+              </a>
+            </li>
+          </ul>
+          <!-- </div> -->
+        </nav>
+      </header>
+
+      <section class="sidebar">
+        <!-- Sidebar with chat threads -->
+        <a href="/" style="text-decoration: none">
+          <h4 style="color: #0c001f; font-weight: bold; text-align: center">
+            History Chat
+          </h4>
+        </a>
+        <hr />
+        <div class="sidebar-thread" id="threadList">
+          {% for thread in threads %}
+          <li
+            class="list-group-item p-3"
+            style="font-weight: bold"
+            onclick="switchThread('{{ thread }}')"
+          >
+            {{thread}}
+          </li>
+          {% endfor %}
+        </div>
+        <hr />
+        <button class="btn btn-success" onclick="createNewThread()">
+          New Thread
+        </button>
+
+        <hr />
+        <div class="sidebar-setting">
+          <div class="setting-sidebar-item" id="light-mode-toggle">
+            <a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-brightness-high"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"
+                />
+              </svg>
+              Light mode</a
+            >
+          </div>
+          <div class="setting-sidebar-item">
+            <a
+              target="_blank"
+              href="https://github.com/NoNameNo1F/"
+              style="text-decoration: none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-github"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
+                />
+              </svg>
+              Github
+            </a>
+          </div>
+          <div class="setting-sidebar-item">
+            <a id="openAIKeyLink">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-key"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"
+                />
+                <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+              </svg>
+              OpenAI Key
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- <div class="container-fluid-chat col-md-6"> -->
+      <div class="container col-md-6">
+        <div class="message-container" id="messageContainer"></div>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Type your message..."
+            id="messageInput"
+          />
+
+          <div class="input-group-append">
+            <button
+              class="btn btn-success"
+              type="button"
+              onclick="sendMessageToBot()"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" id="openAIKeyModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Enter OpenAI Key</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="password"
+              class="form-control"
+              id="openAIKeyInput"
+              placeholder="sk-********************************"
+            />
+            <h2
+              id="keyStatus"
+              style="color: #0c001f; font-weight: bold"
+              class="d-none"
+            ></h2>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              style="transform: translateX(-11%); width: 80%"
+              onclick="sendAndSaveOpenAIKey()"
+            >
+              Save To LocalStorage
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      //loadChatHistory();
+      window.onload = function () {
+        var url = window.location.href;
+        var threadIdMatch = url.match(/\/thread\/(\w+)/);
+        if (threadIdMatch) {
+          var threadId = threadIdMatch[1];
+          switchThread(threadId);
+        }
+      };
+    </script>
+    <script src="/static/js/scripts.js"></script>
+  </body>
+</html>
