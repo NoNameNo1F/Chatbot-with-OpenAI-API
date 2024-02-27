@@ -58,8 +58,7 @@ with app.app_context():
 config = load_dotenv()
 API_KEY = None
 client = OpenAI(
-    #api_key=os.environ.get("API_KEY")
-    api_key="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"
+    api_key=os.environ.get("API_KEY")
 )
 
 @app.route('/')
