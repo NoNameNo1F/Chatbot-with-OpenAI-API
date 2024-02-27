@@ -1,24 +1,32 @@
-body {
+body{
     display: flex;
     height: 100%;
     width: 100%;
     margin: 0;
+    padding: 0;
     background-color: #e4d9f5;
     overflow-x: hidden;
 }
+.header {
+    left: 0;
+    width: 100%;
+    background-color: #e4d9f5;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.9);
+    color: #0c001f;
+}
 
 .sidebar {
-    height: 100vh;
+    height: 100%;
     width: 15%;
     background-color: #e4d9f5;
     padding: 20px;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.9);
     position: fixed;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 .sidebar-thread{
     overflow: auto;
-    max-height: 65%;
+    max-height: 57%;
 }
 
 
@@ -54,16 +62,18 @@ body {
     flex: 1;
     padding: 20px;
 }
-.container-fluid {
-    width: 80vw;
+.container-chat {
+    width: 60vw;
     padding: 0 10%;
+    left: 0;
 }
 
 .message-container {
+    margin-top: 10px;
     overflow: auto;
     display: flex;
     top: 0;
-    height: 90vh;
+    height: 85vh;
     flex-direction: column;
 }
 
@@ -138,4 +148,14 @@ div.input-group {
 ::-webkit-scrollbar-thumb:hover{
     width: 10px;
     background: inherit;
+}
+.nav-item {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.nav-item :hover{
+    background-color: #f17635;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
