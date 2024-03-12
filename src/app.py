@@ -8,6 +8,12 @@ from io import BytesIO
 from dotenv import load_dotenv
 from flask import Flask, Response, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+
+# import libs for reading and embeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from openai import OpenAI
 
 # Create Flask App
@@ -61,6 +67,89 @@ client = OpenAI(
     api_key=os.environ.get("API_KEY")
 )
 
+class ChatPDF:
+    def __init__(self, pdf_data):
+        self.client = OpenAI(
+            api_key=os.environ.get("API_KEY")
+        )
+        self.pdf_content = self.init_vectorstore(pdf_data)
+        self.chat_history = self.load_pdf_to_bot(pdf_data)
+
+    def init_vectorstore(self, pdf_data):
+        OpenAIEmbed = OpenAIEmbeddings(
+            api_key=os.environ.get('API_KEY'),
+            model='text-embedding-3-small'
+        )
+        persist_directory = "chroma_db"
+
+        vectorstore = Chroma.from_documents(
+            documents=pdf_data,
+            embedding=OpenAIEmbed,
+            persist_directory=persist_directory
+        )
+        print("init_vectorstore successful")
+        vectorstore.persist()
+        return vectorstore
+
+    def load_pdf_to_bot(self, pdf_datas):
+        history = [{"role": "system", "content": "You are an Interviewbot assistant that help Software Engineering answer interview questions with various kinds of Topic: OOP, Data Structure, Framework, Web Development, Backend,... "}]
+        history.append({
+            "role": "user",
+            "content": "I'll give you content of my upload pdf file"
+        })
+
+        # Load all text from pdf_content
+        all_text = []
+        for data in pdf_datas:
+            all_text.append(data.page_content)
+
+        # Join all text together
+        pdf_text = '\n'.join(all_text)
+
+        history.append({
+            "role": "user",
+            "content": pdf_text
+        })
+
+        return history
+
+    def save_chat(self, role, message):
+        self.chat_history.append({"role": role, "content": message})
+
+    def search_from_pdf(self, query):
+        retrieve = self.pdf_content.similarity_search(query, k=2)
+        return retrieve[0].page_content
+
+    def chat_completion_data(self, query):
+        messages = self.chat_history
+        messages.append({"role": "user", "content" : query})
+        completion = self.client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages
+        )
+        return completion.choices[0].message.content
+    def retrieve(self, query):
+        temp_db = self.chat_history
+        vectorstore_search = self.search_from_pdf(query)
+
+        temp_db.append({"role": "assistant", "content":vectorstore_search})
+
+        openai_data = self.chat_completion_data(query)
+
+        temp_db.append({"role": "assistant", "content":openai_data})
+
+        temp_db.append({"role": "user", "content": f"Summarize 2 response above to answer the question: {query}"})
+        completion = self.client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=temp_db
+        )
+        res = completion.choices[0].message.content
+        self.save_chat("user", query)
+        self.save_chat("assistant", res)
+        print(res)
+        return res
+
+pdfBot = None
 @app.route('/')
 def index():
     threads = get_all_threads()
@@ -106,6 +195,13 @@ def audio_transcript():
 
     return render_template('trans_theme.html', threads=threads, thread_chat_history=thread_chat_history)
 
+@app.route('/chat-pdf')
+def chatting_with_pdf():
+    threads = get_all_threads()
+
+    thread_chat_history = {thread_id: get_thread_messages(thread_id) for thread_id in threads}
+
+    return render_template('chat_pdf.html', threads=threads, thread_chat_history=thread_chat_history)
 
 @app.route('/api/getUuid', methods=['POST'])
 def generate_uuid():
@@ -125,8 +221,16 @@ def get_openai_key():
 
     app.logger.info(f"OpenAI Key received: {key}")
     return jsonify({'status': status})
-# API route to handle POST requests
 
+@app.route('/api/fetch-history/<threadId>')
+def fetch_chat_history(threadId):
+    try:
+        # threadId = request.args.get('threadId')
+        return jsonify({'chat_history': get_thread_messages(threadId)})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+# API route to handle POST requests
 @app.route('/api/completion', methods=['POST'])
 def chat_completion():
     try:
@@ -155,7 +259,7 @@ def generate_stream():
             n = len(crt_thread) - 1
             print(crt_thread)
             completion = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4-turbo-preview",
                 messages=get_thread_messages(crt_thread[n]),
                 stream=True
             )
@@ -298,7 +402,64 @@ def audio_to_text():
     save_message(thread_id,'assistant',transcript_to_text.text)
     return jsonify({'message': transcript_to_text.text, 'thread_id': thread_id, 'chat_history': get_thread_messages(thread_id)})
 
+
+@app.route('/api/process-pdf', methods=['POST'])
+def processing_pdf():
+    with app.app_context():
+        try:
+            input_file = request.files.get('fileInput')
+            thread_id = request.form.get('thread_id','default')
+            print(input_file.filename)
+            input_file_path = get_data_file_path('file', 'upload_pdf.pdf')
+            input_file.save(input_file_path)
+            # 1 Load pdf
+            loader = PyPDFLoader(input_file_path)
+            # 2 Split it into chunks
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1024, chunk_overlap=16, add_start_index=True
+            )
+            pdf_data =loader.load_and_split(
+                text_splitter=text_splitter
+            )
+
+            pdfBot = get_pdf_bot()
+            pdfBot = ChatPDF(pdf_data)
+            save_pdf_bot(pdfBot)
+
+            save_message(thread_id,'user',f"{input_file.filename} uploaded successfully!")
+
+            save_message(thread_id,'assistant',"PDF uploaded successfully!")
+            return jsonify({'message': 'PDF processed successfully', 'thread_id': thread_id, 'chat_history': get_thread_messages(thread_id)})
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+def save_pdf_bot(current_bot: ChatPDF):
+    global pdfBot
+    pdfBot = current_bot
+
+def get_pdf_bot():
+    global pdfBot
+    return pdfBot
+@app.route('/api/ask-question', methods=['POST'])
+def ask_question():
+    with app.app_context():
+        try:
+            # Get question from request
+            question = request.json['message']
+            thread_id = request.json.get('thread_id','default')
+
+            pdfBot = get_pdf_bot()
+            response = pdfBot.retrieve(question)
+            save_message(thread_id,'user',question)
+            save_message(thread_id,'assistant',response )
+
+            return jsonify({'message': response, 'thread_id': thread_id,'chat_history': get_thread_messages(thread_id)})
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
 if __name__ == '__main__':
-    #with app.app_context():
     crt_thread = get_thread()
+    pdfBot = get_pdf_bot()
     app.run(debug=True)
