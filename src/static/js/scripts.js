@@ -60,24 +60,19 @@ function loadChatHistory() {
 function saveChatHistory() {
   localStorage.setItem("threadChatHistory", JSON.stringify(threadChatHistory));
 }
-// function getChatHistory() {
-//   fetch("/api/chat_history", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-
-//       if (data.status === "Ok") {
-//         msg = "";
-//         streamResponse();
-//       } else {
-//         //Display Error, but it's will never false :D
-//       }
-//     });
-// }
+function getChatHistory() {
+  fetch("/api/fetch-history/" + activeThread, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      threadChatHistory[activeThread] = data.chat_history;
+      saveChatHistory();
+    });
+}
 
 function switchThread(threadId) {
   // Load chat messages for the selected thread
@@ -118,13 +113,13 @@ function displayChatHistory(threadId) {
 }
 
 function sendMessage() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
-  var userMessage = document.getElementById("messageInput").value;
+  var userMessage = document.getElementById("messageInput1").value;
   if (userMessage === "") {
     return;
   }
@@ -165,16 +160,16 @@ function sendMessage() {
       saveChatHistory();
     });
 
-  document.getElementById("messageInput").value = "";
+  document.getElementById("messageInput1").value = "";
 }
 function sendMessageToBot() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
-  var userMessage = document.getElementById("messageInput").value;
+  var userMessage = document.getElementById("messageInput3").value;
   if (userMessage === "") {
     return;
   }
@@ -215,16 +210,16 @@ function sendMessageToBot() {
       saveChatHistory();
     });
 
-  document.getElementById("messageInput").value = "";
+  document.getElementById("messageInput3").value = "";
 }
 function generateImage() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
-  var userMessage = document.getElementById("messageInput").value;
+  var userMessage = document.getElementById("messageInput4").value;
   if (userMessage === "") {
     return;
   }
@@ -282,17 +277,17 @@ function generateImage() {
       saveChatHistory();
     });
 
-  document.getElementById("messageInput").value = "";
+  document.getElementById("messageInput4").value = "";
 }
 
 function sendMessageTTS() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
-  var userMessage = document.getElementById("messageInput").value;
+  var userMessage = document.getElementById("messageInput5").value;
   if (userMessage === "") {
     return;
   }
@@ -342,15 +337,15 @@ function sendMessageTTS() {
       saveChatHistory();
     });
 
-  document.getElementById("messageInput").value = "";
+  document.getElementById("messageInput5").value = "";
 }
 
 function sendMedia() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
   var fileInput = document.getElementById("fileInput");
   var submitFile = fileInput.files[0];
@@ -406,6 +401,7 @@ function streamResponse() {
       console.log("closing cnt");
       source.close();
       //saveChatHistory();
+      getChatHistory();
     } else {
       msg += e.data;
       console.log("Received a message: ", msg);
@@ -431,13 +427,13 @@ function streamResponse() {
   });
 }
 function sendMessageStream() {
-  // var status = document.getElementById("keyStatus").innerHTML;
-  // if (status !== "Ok") {
-  //   $("#openAIKeyModal").modal("show");
-  //   return;
-  // }
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
 
-  var userMessage = document.getElementById("messageInput").value;
+  var userMessage = document.getElementById("messageInput2").value;
   if (userMessage === "") {
     return;
   }
@@ -471,8 +467,22 @@ function sendMessageStream() {
       }
     });
 
-  document.getElementById("messageInput").value = "";
+  document.getElementById("messageInput2").value = "";
 }
+function changeInputGroup(selectElement) {
+  var selectedOption = selectElement.value;
+  // Hide all input groups
+  var inputGroups = document.querySelectorAll(".input-group");
+  inputGroups.forEach(function (group) {
+    group.style.display = "none";
+  });
+  // Show the selected input group
+  var selectedInputGroup = document.getElementById(selectedOption);
+  if (selectedInputGroup) {
+    selectedInputGroup.style.display = "flex";
+  }
+}
+
 // Function to create a new thread
 function createNewThread() {
   var newThreadId = "thread" + (Object.keys(threadChatHistory).length + 1);
@@ -494,3 +504,108 @@ function createNewThread() {
 }
 
 loadChatHistory();
+
+function sendFilePDF() {
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
+
+  var fileInput = document.getElementById("fileInput3");
+  var submitFile = fileInput.files[0];
+  if (!submitFile) {
+    return;
+  }
+
+  // Create a user message element
+  var userMessageElement = document.createElement("div");
+  userMessageElement.className = "user-message";
+
+  var fileLink = document.createElement("a");
+  fileLink.href = URL.createObjectURL(submitFile);
+  fileLink.download = submitFile.name;
+  fileLink.innerText = submitFile.name;
+
+  userMessageElement.appendChild(fileLink);
+  // Append the user message to the message container
+  document.getElementById("messageContainer").appendChild(userMessageElement);
+
+  var formData = new FormData();
+  formData.append("fileInput", submitFile);
+  formData.append("thread_id", activeThread);
+  // Make a POST request to the server
+  fetch("/api/process-pdf", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      var responseMessageElement = document.createElement("div");
+      responseMessageElement.className = "response-message";
+
+      responseMessageElement.innerText = data.message;
+      document
+        .getElementById("messageContainer")
+        .appendChild(responseMessageElement);
+
+      // Update the chat history for the active thread
+      threadChatHistory[activeThread] = data.chat_history;
+
+      // Save chat history to local storage
+      saveChatHistory();
+    });
+
+  document.getElementById("fileInput3").value = "";
+}
+
+function sendAskQuestion() {
+  var status = document.getElementById("keyStatus").innerHTML;
+  if (status !== "Ok") {
+    $("#openAIKeyModal").modal("show");
+    return;
+  }
+
+  var userMessage = document.getElementById("messageInput6").value;
+  if (userMessage === "") {
+    return;
+  }
+
+  // Create a user message element
+  var userMessageElement = document.createElement("div");
+  userMessageElement.className = "user-message";
+  userMessageElement.innerText = userMessage;
+
+  // Append the user message to the message container
+  document.getElementById("messageContainer").appendChild(userMessageElement);
+
+  // Make a POST request to the server
+  fetch("/api/ask-question", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: userMessage,
+      thread_id: activeThread,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      var responseMessageElement = document.createElement("div");
+      responseMessageElement.className = "response-message";
+      responseMessageElement.innerText = data.message;
+
+      document
+        .getElementById("messageContainer")
+        .appendChild(responseMessageElement);
+
+      // Update the chat history for the active thread
+      threadChatHistory[activeThread] = data.chat_history;
+
+      // Save chat history to local storage
+      saveChatHistory();
+    });
+
+  document.getElementById("messageInput6").value = "";
+}
