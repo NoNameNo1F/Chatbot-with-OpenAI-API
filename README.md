@@ -214,9 +214,12 @@ Use OpenAI API Key to run it locally
 
 - [x] Input Valid OpenAI API Key to use
 - [x] Chat Completion model only
-- [ ] Image generator
-- [ ] Speech to text
-- [ ] Fine-Tuning
+- [x] Image generator
+- [x] Speech to text
+- [x] Fine-Tuning
+- [x] Chat with PDF SoftwareEngineering File
+- [ ] Responsive UI
+- [ ] Chat with URL, docx, txt,..
 
 <!-- Contributing -->
 
